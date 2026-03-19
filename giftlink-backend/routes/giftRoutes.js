@@ -1,5 +1,8 @@
 const connectToDatabase = require("../models/db");
 
+const express = require ('express');
+const router = express.Router();
+
 router.get('/', async (req, res) => {
     try {
         // Task 1: Connect to MongoDB and store connection to db constant
@@ -10,7 +13,7 @@ router.get('/', async (req, res) => {
 
         // Task 3: Fetch all gifts using the collection.find method. Chain with toArray method to convert to JSON array
         // const gifts = {{insert code here}}
-        const gifts = collection.find();
+        const gifts = await collection.find().toArray();
 
         // Task 4: return the gifts using the res.json method
         res.json(gifts);
