@@ -9,6 +9,10 @@ function SearchPage() {
     const categories = ['Living', 'Bedroom', 'Bathroom', 'Kitchen', 'Office'];
     const conditions = ['New', 'Like New', 'Older'];
 
+    const [searchQuery, setSearchQuery] = useState('');
+    const [ageRange, setAgeRange] = useState(6);
+    const [searchResults, setSearchResults] = useState([]);
+
     useEffect(() => {
         // fetch all products
         const fetchProducts = async () => {
@@ -32,13 +36,33 @@ function SearchPage() {
 
 
     // Task 2. Fetch search results from the API based on user inputs.
+    const handleSearch = async () => {
+        const baseUrl = `${urlConfig.backendUrl}/api/search?`;
+        const queryParams = new URLSearchParams({
+            name: searchQuery,
+            age_years: ageRange,
+            category: document.getElementById('categorySelect').value,
+            condition: document.getElementById('conditionSelect').value,
+        }).toString();
+
+        try {
+            const response = await fetch(`${baseUrl}${queryParams}`);
+            if (!response.ok) {
+                throw new Error('Search failed');
+            }
+            const data = await response.json();
+            setSearchResults(data);
+        } catch (error) {
+            console.error('Failed to fetch search results:', error);
+        }
+    };
+
 
     const navigate = useNavigate();
 
     const goToDetailsPage = (productId) => {
         // Task 6. Enable navigation to the details page of a selected gift.
     };
-
 
 
 
@@ -50,8 +74,25 @@ function SearchPage() {
                         <h5>Filters</h5>
                         <div className="d-flex flex-column">
                             {/* Task 3: Dynamically generate category and condition dropdown options.*/}
+
+                                <label htmlFor="categorySelect">Category</label>
+                                <select id="categorySelect" className="form-control my-1">
+                                    <option value="">All</option>
+                                    {categories.map((category) => {
+                                            <option key={category} value={category}>{category}</option>
+                                    })}
+                                </select>
+
+                                <label htmlFor="conditionSelect">Condition</label>
+                                <select id="conditionSelect" className="form-control my-1">
+                                    <option value="">All</option>
+                                    {conditions.map(condition => (
+                                    <option key={condition} value={condition}>{condition}</option>
+                                    ))}
+                                </select>
                             {/* Task 4: Implement an age range slider and display the selected value. */}
-                        </div>
+                            <label htmlFor="ageRange">Less than {ageRange} years</label>
+                            <input type="range" className='form-control-range' id='ageRange' min={1} max={10} value={ageRange} onChange={(event) => ageRange(event.target.value)} />
                     </div>
                     {/* Task 7: Add text input field for search criteria*/}
                     {/* Task 8: Implement search button with onClick event to trigger search:*/}
