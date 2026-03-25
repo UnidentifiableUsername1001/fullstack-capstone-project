@@ -1,4 +1,4 @@
-
+/*jshint esversion: 8 */
 import React, { useState } from 'react';
 import './LoginPage.css';
 
